@@ -1,0 +1,20 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "files.associations": {
+        "log.h": "c",
+        "common.h": "c",
+        "config.h": "c",
+        "compat.h": "c",
+        "screen.h": "c",
+        "mouse_inject.h": "c",
+        "assert.h": "c"
+    },
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+    "java.completion.matchCase": "off",
+    "java.implementationsCodeLens.enabled": true,
+    "java.project.outputPath": "tmp",
+    "java.referencesCodeLens.enabled": true
+}
