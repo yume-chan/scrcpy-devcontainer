@@ -7,14 +7,23 @@
         "compat.h": "c",
         "screen.h": "c",
         "mouse_inject.h": "c",
-        "assert.h": "c"
+        "assert.h": "c",
+        "stdatomic.h": "c",
+        "thread.h": "c",
+        "control_msg.h": "c",
+        "audio_player.h": "c",
+        "net.h": "c",
+        "sdl_audio.h": "c"
     },
     "editor.formatOnSaveMode": "modificationsIfAvailable",
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "editor.tabSize": 4,
     "editor.detectIndentation": false,
     "java.completion.matchCase": "off",
     "java.implementationsCodeLens.enabled": true,
     "java.project.outputPath": "tmp",
-    "java.referencesCodeLens.enabled": true
+    "java.referencesCodeLens.enabled": true,
+    "[c]": {
+        "editor.formatOnSave": false
+    }
 }
