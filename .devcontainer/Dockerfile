@@ -30,25 +30,32 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
 # Install Android SDK
 # Based on https://github.com/CircleCI-Public/cimg-android/blob/main/Dockerfile.template
 
-ENV ANDROID_HOME "/opt/android-sdk"
-ENV ANDROID_SDK_ROOT $ANDROID_HOME
-ENV CMDLINE_TOOLS_ROOT "${ANDROID_HOME}/cmdline-tools/latest/bin"
-ENV PATH "${ANDROID_HOME}/emulator:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/platform-tools/bin:${PATH}"
+ENV TMP_ANDROID_HOME="/tmp/android-sdk"
+ENV TMP_CMDLINE_TOOLS_ROOT="${TMP_ANDROID_HOME}/cmdline-tools/latest/bin"
 
-RUN --mount=target=${ANDROID_HOME},type=cache,sharing=locked \
+RUN --mount=target=${TMP_ANDROID_HOME},type=cache,sharing=locked \
     SDK_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-9123335_latest.zip" && \
-    mkdir -p ${ANDROID_HOME}/cmdline-tools && \
-    mkdir ${ANDROID_HOME}/platforms && \
-    mkdir ${ANDROID_HOME}/ndk && \
+    mkdir -p ${TMP_ANDROID_HOME}/cmdline-tools && \
+    mkdir ${TMP_ANDROID_HOME}/platforms && \
+    mkdir ${TMP_ANDROID_HOME}/ndk && \
     wget -O /tmp/cmdline-tools.zip -t 5 "${SDK_TOOLS_URL}" && \
-    unzip -q /tmp/cmdline-tools.zip -d ${ANDROID_HOME}/cmdline-tools && \
+    unzip -q /tmp/cmdline-tools.zip -d ${TMP_ANDROID_HOME}/cmdline-tools && \
     rm /tmp/cmdline-tools.zip && \
-    mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest
+    mv ${TMP_ANDROID_HOME}/cmdline-tools/cmdline-tools ${TMP_ANDROID_HOME}/cmdline-tools/latest
 
-RUN --mount=target=${ANDROID_HOME},type=cache,sharing=locked \
-    echo y | ${CMDLINE_TOOLS_ROOT}/sdkmanager "tools" && \
-    echo y | ${CMDLINE_TOOLS_ROOT}/sdkmanager "build-tools;30.0.3" && \
-    echo y | ${CMDLINE_TOOLS_ROOT}/sdkmanager "platforms;android-33"
+RUN --mount=target=${TMP_ANDROID_HOME},type=cache,sharing=locked \
+    echo y | ${TMP_CMDLINE_TOOLS_ROOT}/sdkmanager "tools" && \
+    echo y | ${TMP_CMDLINE_TOOLS_ROOT}/sdkmanager "build-tools;30.0.3" && \
+    echo y | ${TMP_CMDLINE_TOOLS_ROOT}/sdkmanager "platforms;android-33"
+
+ENV ANDROID_HOME=/opt/android-sdk
+ENV ANDROID_SDK_ROOT=$ANDROID_HOME
+ENV PATH="${ANDROID_HOME}/emulator:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/platform-tools/bin:${PATH}"
+
+RUN --mount=target=${TMP_ANDROID_HOME},type=cache,sharing=locked \
+    cp -r ${TMP_ANDROID_HOME} ${ANDROID_SDK_ROOT}
+
+RUN ls -al ${ANDROID_HOME}
 
 # Cache Gradle dependencies
 VOLUME /home/vscode/.gradle/
